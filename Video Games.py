@@ -130,21 +130,25 @@ st.write(f"""
 	##### 👉 There are {len(complete_data['Genre'].unique())} different Genres
 """)
 
-create_hist(
-	data=data,
-	column_name='Genre',
-)
+count_variable = data['Genre'].value_counts()
+fig = px.funnel(count_variable, x='Genre', y=count_variable.index, color_discrete_sequence = ["#087C01"])
+fig.update_xaxes(title_text="Frequency of the Genre")
+fig.update_yaxes(title_text=f"Genre")
+st.plotly_chart(fig)
 
 st.write(f"""
 	🎈 Action is the one of the most popular video game genre on the market independent from the year.
 """)
 
 st.write(f"""
-	##### 👉 There are {len(complete_data['Rating'].unique())} possible ratings for each game. This rating distribution is:
+	##### 👉 There are {len(complete_data['Rating'].unique())} possible ratings for each game, if we ignore those rows that don't have rating or that are rated as rp (rating pending) we get 8. This rating distribution is:
 """)
 
 # Ratings visualization
-create_hist(data, 'Rating')
+rating_data = pd.read_csv('./data/Rating.csv')
+fig = px.pie(rating_data, values='Distribution', names='Rating', title='Rating Distribution', hole=.3, color_discrete_sequence = ["#072700", "#004D00", "#087C01", "#00B30C", "#BAC6B9", "#A6ACA7", "#525751", "#000000"])
+
+st.plotly_chart(fig)
 
 st.write("""
 	🎈 There are not some ratings for some years.\\
@@ -171,7 +175,7 @@ publisher_data = publisher_complete_data[
 
 st.write(f""" 
 	🎈 The total video games release (all years) for {selected_publisher} is: **`{
-		float(games_per_publishers[games_per_publishers["Publisher"] == selected_publisher]["Recuento de Name"])
+		int(games_per_publishers[games_per_publishers["Publisher"] == selected_publisher]["Recuento de Name"])
 	}`** and the total sales are: **`{float(publisher_data.Sales)}`** million dollars
 	##### 👉 The perfomance for {selected_publisher} through the years is:
 """)
@@ -212,13 +216,16 @@ st.title("🦦 User Score Analytics")
 avg_usr_score_year_publisher_df = pd.read_csv(
 	"./data/Avg User Score por Year y Publisher.csv"
 )
-st.plotly_chart(px.line(
+fig = px.line(
 	avg_usr_score_year_publisher_df,
 	x='Year', 
 	y='Promedio de User_Score', 
 	color='Publisher', 
-	title="Year by Average User Score for the Top 7 Publishers"
-))
+	title="Year by Average User Score for the Top 7 Publishers",
+	color_discrete_sequence=["#072700", "#004D00", "#087C01", "#00B30C", "#BAC6B9", "#A6ACA7", "#525751", "#000000"]
+)
+
+st.plotly_chart(fig)
 
 
 # Top 10 publishers with better user score

@@ -36,8 +36,6 @@ def plot_simple_line(data, column_name, entity, title, color="#86BC25"):
 		].sum())
 		x.append(i)
 
-	print(y)
-
 	fig = px.line(
 		x=x,
 		y=y,
